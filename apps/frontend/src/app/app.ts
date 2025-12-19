@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { IUser } from "@cornerstone/shared";
 import { NxWelcome } from './nx-welcome';
 
 @Component({
@@ -10,4 +11,5 @@ import { NxWelcome } from './nx-welcome';
 })
 export class App {
   protected title = 'frontend';
+  user?: IUser;
 }
