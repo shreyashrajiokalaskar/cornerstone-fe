@@ -1,6 +1,6 @@
 # Cornerstone
 
-A modern full-stack monorepo built with **Nx**, featuring an **Angular 21** frontend and **NestJS 11** backend.
+A modern full-stack monorepo built with **Nx**, featuring an **Angular 21** frontend and **NestJS 11** backend
 
 ## 🏗️ Project Structure
 
