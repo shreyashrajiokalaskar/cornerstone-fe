@@ -1,0 +1,24 @@
+.signup-container {
+    background-image: url('../../../assets/gif/bg.gif');
+    background-size: 100% 100%;
+
+    .signup-card {
+        max-width: 450px;
+        width: 100%;
+        // background: rgba(255, 255, 255, 0.9); // Frosted effect
+        backdrop-filter: blur(10px);
+        border-radius: 16px !important;
+    }
+
+    mat-form-field {
+        margin-bottom: 8px;
+    }
+
+
+
+    /* Customizing the Teal primary slightly for high-impact buttons */
+    .mat-flat-button.mat-primary {
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+}

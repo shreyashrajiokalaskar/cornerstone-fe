@@ -1,0 +1,72 @@
+<section class="signup-container">
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4">
+
+                <mat-card class="p-4 p-md-5 shadow-lg border-0 ">
+                    <div class="text-center mb-4">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex p-3 mb-3 shadow">
+                            <mat-icon class="fs-2 w-auto h-auto">person_add</mat-icon>
+                        </div>
+                        <h1 class="h3 fw-bold mb-1">Create Account</h1>
+                        <p class="text-muted small">Join as a Contributor to start your workspace.</p>
+                    </div>
+
+                    <form [formGroup]="signupForm" (ngSubmit)="submit()">
+                        <div class="mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Full Name</mat-label>
+                                <input matInput formControlName="name" placeholder="Enter your name">
+                                <mat-icon matSuffix class="opacity-50">badge</mat-icon>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="mb-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Email Address</mat-label>
+                                <input matInput formControlName="email" type="email" placeholder="email@example.com">
+                                <mat-icon matSuffix class="opacity-50">email</mat-icon>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-12 col-md-6 mb-3">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Password</mat-label>
+                                    <input matInput [type]="hidePassword ? 'password' : 'text'"
+                                        formControlName="password">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-12 col-md-6 mb-3">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Confirm</mat-label>
+                                    <input matInput [type]="hidePassword ? 'password' : 'text'"
+                                        formControlName="confirmPassword">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        @if (signupForm.hasError('mismatch') && signupForm.get('confirmPassword')?.touched) {
+                        <div class="alert alert-danger py-2 small border-0 mb-3">
+                            Passwords do not match.
+                        </div>
+                        }
+
+                        <button mat-flat-button color="primary" class="w-100 py-4 fw-bold shadow-sm"
+                            [disabled]="signupForm.invalid">
+                            SIGN UP & START
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="small text-muted mb-0">Already a contributor?
+                            <a [routerLink]="['/login']" class="text-primary fw-bold text-decoration-none ms-1">Login
+                                here</a>
+                        </p>
+                    </div>
+                </mat-card>
+
+            </div>
+        </div>
+    </div>
+</section>
