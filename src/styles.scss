@@ -4,6 +4,7 @@
 // This assumes _theme-colors.scss is in src/styles/
 @use './styles/theme-colors' as colors;
 
+@use 'ngx-toastr/toastr';
 @import "bootstrap/dist/css/bootstrap.min.css";
 @include mat.core();
 

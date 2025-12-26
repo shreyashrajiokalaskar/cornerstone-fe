@@ -13,7 +13,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { ROUTES } from '../../shared/constant/common.constant';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -34,7 +36,7 @@ export class Signup {
   signupForm: FormGroup;
   hidePassword = true;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.signupForm = this.fb.group(
       {
         name: ['', [Validators.required, Validators.minLength(2)]],
@@ -58,6 +60,18 @@ export class Signup {
   submit() {
     if (this.signupForm.valid) {
       console.log('Signup Data:', this.signupForm.value);
+      this.authService
+        .signupUser({
+          email: this.signupForm.value['email'],
+          password: this.signupForm.value['password'],
+          name: this.signupForm.value['name'],
+        })
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+            this.router.navigate([`${ROUTES.auth}/${ROUTES.login}`]);
+          },
+        });
       // Proceed to: Create Workspace
     }
   }

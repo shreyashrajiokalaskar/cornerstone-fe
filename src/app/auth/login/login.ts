@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {
   FormControl,
@@ -13,8 +13,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, ParamMap, RouterModule } from '@angular/router';
-import { environment } from '../../../environments/environment';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { SESSION_KEYS } from '../../shared/constant/common.constant';
+import { IHttpResponse, IUserDetails } from '../../shared/interface/common.interface';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -40,29 +43,68 @@ export class Login {
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
   });
 
-  constructor(private httpClient: HttpClient, private activatedRoute: ActivatedRoute) {
-    console.log();
-    this.activatedRoute.queryParamMap.subscribe({
-      next: (data: ParamMap) => {
-        console.log('Data from route', data);
-        this.httpClient
-          .get(`${environment.API_URL}/auth/google-verify?code=${data.get('code')}`)
-          .subscribe({
-            next: (res: any) => {
-              console.log('GOOGLE LOGIN RESPONSE', res);
-              // window.open(res?.data?.url, '_blank');
-            },
-          });
-      },
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
+    private toastr: ToastrService
+  ) {
+    console.log('this.activatedRoute.url');
+    if (this.router.url.includes('code')) {
+      this.verifyGoogleCode();
+    }
+  }
+
+  verifyGoogleCode() {
+    this.activatedRoute.queryParams.subscribe((params) => {
+      const paramValue = params['paramName'];
+      console.log(paramValue);
+      this.authService.verifyGoogleCode(params['code'], params['state']).subscribe({
+        next: (res: IHttpResponse<IUserDetails>) => {
+          console.log('GOOGLE LOGIN RESPONSE', res);
+          if (res.success) {
+            this.toastr.success('Logged In successfully!');
+            this.authService.userData = res.data;
+            sessionStorage.setItem(SESSION_KEYS.TOKEN, res.data.token as string);
+            this.toastr.success('Logged In successfully!');
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.toastr.error('Something went wrong! Try again.');
+            this.authService.logout();
+          }
+        },
+        error: () => {
+          this.toastr.error('Something went wrong! Try again.');
+          this.authService.logout();
+        },
+      });
     });
   }
 
   loginWithGoogle() {
-    this.httpClient.get(`${environment.API_URL}/auth/google-login`).subscribe({
+    this.authService.loginWithGoogle().subscribe({
       next: (res: any) => {
         console.log('GOOGLE LOGIN RESPONSE', res);
-        window.open(res?.data?.url, '_blank');
+        window.open(res?.data?.url, '');
       },
     });
+  }
+
+  login() {
+    this.authService
+      .login(this.loginForm.value.email as string, this.loginForm.value.password as string)
+      .subscribe({
+        next: (details: IHttpResponse<IUserDetails>) => {
+          this.authService.userData = { email: details.data.email, name: details.data.name };
+          this.authService.token = details.data.token as string;
+          this.authService.refreshToken = details.data.refreshToken as string;
+          this.toastr.success('Logged In successfully!');
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err: HttpErrorResponse) => {
+          console.log(err.error.message);
+          this.toastr.error(err.error.message);
+        },
+      });
   }
 }
