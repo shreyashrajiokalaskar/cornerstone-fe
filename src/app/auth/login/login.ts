@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -65,9 +65,9 @@ export class Login {
           if (res.success) {
             this.toastr.success('Logged In successfully!');
             this.authService.userData = res.data;
-            sessionStorage.setItem(SESSION_KEYS.TOKEN, res.data.token as string);
+            localStorage.setItem(SESSION_KEYS.TOKEN, res.data.token as string);
             this.toastr.success('Logged In successfully!');
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/workspace']);
           } else {
             this.toastr.error('Something went wrong! Try again.');
             this.authService.logout();
@@ -99,7 +99,7 @@ export class Login {
           this.authService.token = details.data.token as string;
           this.authService.refreshToken = details.data.refreshToken as string;
           this.toastr.success('Logged In successfully!');
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/workspace']);
         },
         error: (err: HttpErrorResponse) => {
           console.log(err.error.message);

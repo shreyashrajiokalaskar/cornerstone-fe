@@ -1,0 +1,22 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let doc of documents">
+            <td>{{ doc.name }}</td>
+            <td>
+                <span class="badge" [ngClass]="{
+              'bg-warning': doc.status === 'PENDING',
+              'bg-success': doc.status === 'INDEXED',
+              'bg-danger': doc.status === 'FAILED'
+            }">
+                    {{ doc.status }}
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</table>

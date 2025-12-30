@@ -14,11 +14,18 @@ export const API_ENDPOINTS = {
     refresh: 'auth/refresh',
     verifyCode: (code: string, state: string) => `auth/google-verify?code=${code}&state=${state}`,
   },
+  users: 'users',
+  workspace: 'workspaces',
+  documents: {
+    upload: 'documents/upload',
+    uploaded: 'documents/uploaded',
+    getAllByWorkspace: 'workspaces/documents',
+  },
 };
 
 export const APP_ROUTES = {
   auth: 'auth',
   login: 'login',
   signup: 'signup',
-  dashboard: 'dashboard',
+  workspace: 'workspace',
 };

@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>New Workspace</h2>
+<mat-dialog-content>
+    <form [formGroup]="workspaceForm" class="d-flex flex-column pt-2">
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Workspace Name</mat-label>
+            <input matInput placeholder="e.g. HR Policies 2025" type="name" formControlName="name" />
+            @if (workspaceForm.controls['name'].invalid) {
+            <mat-error>{{
+                workspaceForm.controls['name'].hasError('required')
+                ? 'Name is required!'
+                : 'Name should be greater than 3 characters.'
+                }}</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Workspace Description</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary" [disabled]="workspaceForm.invalid" (click)="submit()">
+        Create
+    </button>
+</mat-dialog-actions>

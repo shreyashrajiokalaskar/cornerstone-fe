@@ -32,16 +32,17 @@ export class AuthService {
   }
 
   set userData(userData: IUserDetails) {
-    sessionStorage.setItem(SESSION_KEYS.USER, JSON.stringify(userData));
+    localStorage.setItem(SESSION_KEYS.USER, JSON.stringify(userData));
   }
 
   get userData(): IUserDetails {
-    return JSON.parse(sessionStorage.getItem(SESSION_KEYS.USER) ?? '');
+    return JSON.parse(localStorage.getItem(SESSION_KEYS.USER) ?? '');
   }
 
-  private storeTokens(tokens: { accessToken: string; refreshToken: string }) {
-    sessionStorage.setItem(SESSION_KEYS.TOKEN, tokens.accessToken);
-    sessionStorage.setItem(SESSION_KEYS.REFRESH_TOKEN, tokens.refreshToken);
+  storeTokens(tokens: { token: string; refreshToken: string }) {
+    localStorage.setItem(SESSION_KEYS.TOKEN, tokens.token ?? '');
+    localStorage.setItem(SESSION_KEYS.REFRESH_TOKEN, tokens.refreshToken ?? '');
+    console.log('SETTING VALUES', tokens.token, tokens.refreshToken);
   }
 
   logout() {
@@ -52,7 +53,7 @@ export class AuthService {
       .subscribe({
         next: () => {
           console.log('LOGOUT SUCCESSFUL!');
-          sessionStorage.clear();
+          localStorage.clear();
           this.toastrService.success('Logged out successfully!');
           this.router.navigate([`${APP_ROUTES.auth}/${APP_ROUTES.login}`]);
         },
@@ -74,24 +75,34 @@ export class AuthService {
   }
 
   refresh() {
-    const refreshToken = sessionStorage.getItem(SESSION_KEYS.REFRESH_TOKEN);
+    const refreshToken = localStorage.getItem(SESSION_KEYS.REFRESH_TOKEN);
 
     return this.commonHttpClient
-      .post<{ accessToken: string; refreshToken: string }>(API_ENDPOINTS.auth.refresh, {
+      .post<{ data: { token: string; refreshToken: string } }>(API_ENDPOINTS.auth.refresh, {
         refreshToken,
       })
-      .pipe(tap((tokens) => this.storeTokens(tokens)));
+      .pipe(
+        tap((tokens) => {
+          console.log('THIS ARE THE TOKENS FROM REFRESH', tokens);
+          window.alert(JSON.stringify(tokens));
+          this.storeTokens(tokens.data);
+        })
+      );
   }
 
   set token(authToken: string) {
-    sessionStorage.setItem(SESSION_KEYS.TOKEN, authToken);
+    localStorage.setItem(SESSION_KEYS.TOKEN, authToken);
+  }
+
+    get token(): string {
+    return localStorage.getItem(SESSION_KEYS.TOKEN) as string;
   }
 
   set refreshToken(token: string) {
-    sessionStorage.setItem(SESSION_KEYS.REFRESH_TOKEN, token);
+    localStorage.setItem(SESSION_KEYS.REFRESH_TOKEN, token);
   }
 
   get refreshToken(): string {
-    return sessionStorage.getItem(SESSION_KEYS.REFRESH_TOKEN) as string;
+    return localStorage.getItem(SESSION_KEYS.REFRESH_TOKEN) as string;
   }
 }

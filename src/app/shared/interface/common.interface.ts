@@ -11,3 +11,16 @@ export interface IUserDetails {
   token?: string;
   refreshToken?: string;
 }
+
+export interface IUploadPayload {
+  name: string;
+  contentType: string;
+  workspaceId: string;
+  size: number;
+  checksum: string;
+}
+
+export interface ISignedUrl {
+  key: string;
+  url: string;
+}

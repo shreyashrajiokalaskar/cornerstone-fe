@@ -3,6 +3,8 @@ import { Login } from './auth/login/login';
 import { Signup } from './auth/signup/signup';
 import { Dashboard } from './dashboard/dashboard';
 import { APP_ROUTES, authGuard } from './shared';
+import { Workspace } from './workspace/workspace';
+import { WorkspaceDetails } from './workspace/workspace-details/workspace-details';
 
 export const routes: Routes = [
   {
@@ -26,9 +28,19 @@ export const routes: Routes = [
     ],
   },
   {
-    path: APP_ROUTES.dashboard,
-    component: Dashboard,
+    path: APP_ROUTES.workspace,
     canActivate: [authGuard],
+    component: Dashboard,
+    children: [
+      {
+        path: '',
+        component: Workspace,
+      },
+      {
+        path: ':id',
+        component: WorkspaceDetails,
+      },
+    ],
   },
   // {
   //   path: '**',

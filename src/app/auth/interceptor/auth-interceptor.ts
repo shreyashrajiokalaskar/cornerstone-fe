@@ -14,6 +14,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.token;
+    console.log(req.url)
+
+    if(req.url.includes('aws')){
+      return next.handle(req);
+    }
 
     const request = token
       ? req.clone({
@@ -28,9 +33,10 @@ export class AuthInterceptor implements HttpInterceptor {
         if (error.status === 401) {
           return this.authService.refresh().pipe(
             switchMap((tokens) => {
+              window.alert(tokens.data.token);
               const retry = req.clone({
                 setHeaders: {
-                  Authorization: `Bearer ${tokens.accessToken}`,
+                  Authorization: `Bearer ${tokens.data.token}`,
                 },
               });
               return next.handle(retry);

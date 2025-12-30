@@ -1,0 +1,18 @@
+<div class="card p-3 mb-4 d-flex flex-row gap-3">
+    <label class="btn btn-outline-primary w-100">
+        <input type="file" hidden #fileInput (change)="onFileSelected($event)" [disabled]="uploading()" />
+        @if(!uploading() && file === null){
+        <span>Upload Document</span>
+        }
+        @if(uploading() && uploading() !== 100){
+        <mat-progress-bar class="example-margin" [mode]="'indeterminate'" [value]="uploading" [bufferValue]="75">
+        </mat-progress-bar>
+        }
+        @if(!uploading()){
+        <span>{{file?.name}}</span>
+        }
+    </label>
+    <button mat-flat-button color="primary" (click)="upload.emit(file)" [disabled]="file === null" type="button">
+        Upload
+    </button>
+</div>

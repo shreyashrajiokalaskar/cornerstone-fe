@@ -14,4 +14,12 @@ export class CommonHttpService {
   post<T>(endPoint: string, body: any): Observable<T> {
     return this.httpClient.post<T>(`${environment.API_URL}/${endPoint}`, body);
   }
+
+  patch<T>(endPoint: string, body: any): Observable<T> {
+    return this.httpClient.patch<T>(`${environment.API_URL}/${endPoint}`, body);
+  }
+
+  delete<T>(endPoint: string): Observable<T> {
+    return this.httpClient.delete<T>(`${environment.API_URL}/${endPoint}`);
+  }
 }
