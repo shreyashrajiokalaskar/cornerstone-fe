@@ -7,4 +7,18 @@ export interface IWorkspace {
   createdAt: Date;
 }
 
-export interface IWorkspaceDetails {}
+export interface IWorkspaceDetails {
+  id: string;
+  name: string;
+  description: string;
+  ownerId: string;
+  active: boolean;
+  documents: IDocument[];
+}
+
+export interface IDocument {
+  id: string;
+  name: string;
+  key: string;
+  status: string;
+}

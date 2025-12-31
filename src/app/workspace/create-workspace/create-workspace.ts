@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ToastrService } from 'ngx-toastr';
 import { IWorkspace } from '../workspace.interface';
 import { WorkspaceService } from '../workspace.service';
 
@@ -35,7 +37,8 @@ export class CreateWorkspace {
 
   constructor(
     private workspaceService: WorkspaceService,
-    private dialogRef: MatDialogRef<CreateWorkspace>
+    private dialogRef: MatDialogRef<CreateWorkspace>,
+    private toastrService: ToastrService
   ) {
     if (this.data?.id) {
       this.workspaceForm.controls['name'].setValue(this.data.name);
@@ -47,12 +50,21 @@ export class CreateWorkspace {
 
   submit() {
     if (this.workspaceForm.valid) {
-      this.workspaceService
-        .createWorkspace(this.workspaceForm.value as Partial<IWorkspace>)
-        .subscribe({
-          next: () => this.dialogRef.close(true),
-          error: (err) => console.error('Upload failed', err),
-        });
+      if (!this.data?.id) {
+        this.workspaceService
+          .createWorkspace(this.workspaceForm.value as Partial<IWorkspace>)
+          .subscribe({
+            next: () => this.dialogRef.close(true),
+            error: (err: HttpErrorResponse) => { this.toastrService.error(err.error.message) }
+          });
+      } else {
+        this.workspaceService
+          .updateWorkspace(this.data.id, this.workspaceForm.value as Partial<IWorkspace>)
+          .subscribe({
+            next: () => this.dialogRef.close(true),
+            error: (err: HttpErrorResponse) => { this.toastrService.error(err.error.message) }
+          });
+      }
     }
   }
 }

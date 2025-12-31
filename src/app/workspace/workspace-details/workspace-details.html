@@ -1,12 +1,24 @@
 <div class="container mt-4">
-    <app-document-upload [workspaceId]="workspaceId" (upload)="getPresignedUrl($event)" [resetTrigger]="resetTrigger()"
-        [uploading]="uploadProgress"></app-document-upload>
-    <!-- <ng-container *ngIf="workspace$ | async as workspace">
-        <h3>{{ workspace.name }}</h3>
+    <a [routerLink]="['/workspace']" class="d-flex align-items-center text-decoration-none">
+        <mat-icon matPrefix class="me-2 text-primary font-16 back-arrow mb-3">keyboard_backspace</mat-icon>
+    </a>
+    @let workspace = workspace$();
+    @if(workspace){
+    <ng-container>
+        <div class="row flex-row justify-content-between mb-4 align-items-center">
+            <h3 class="fw-bold w-auto m-0">{{ workspace.name }}</h3>
+            <mat-slide-toggle class="example-margin w-auto" [checked]="workspace.active"
+                (toggleChange)="updateStatus(!workspace.active)">
+            </mat-slide-toggle>
+        </div>
         <p class="text-muted">{{ workspace.description }}</p>
 
 
-        <app-document-list [documents]="documents$ | async"></app-document-list>
-    </ng-container> -->
+        <app-document-list [documents]="workspace.documents" (getStatus)="getStatus($event)"
+            (deleteDocument)="deleteDocument($event)" (viewDocument)="viewDocument($event)"></app-document-list>
+    </ng-container>
+    }
+    <app-document-upload [workspaceId]="workspaceId" (upload)="getPresignedUrl($event)" [resetTrigger]="resetTrigger()"
+        [uploading]="uploadProgress"></app-document-upload>
 
 </div>

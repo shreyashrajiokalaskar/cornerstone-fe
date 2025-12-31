@@ -11,7 +11,7 @@
         <div class="col-md-4">
             <mat-card class="h-100 shadow-sm">
                 <mat-card-header>
-                    <div mat-card-avatar class="workspace-icon">
+                    <div mat-card-avatar class="workspace-icon d-flex justify-content-center align-items-center">
                         <mat-icon>folder_shared</mat-icon>
                     </div>
                     <mat-card-title>{{ ws.name }}</mat-card-title>
@@ -28,9 +28,14 @@
                             {{ ws.active ? 'Active' : 'Disabled' }}
                         </mat-chip>
                     </mat-chip-set>
-                    <button mat-button color="primary" class="ms-auto" [routerLink]="['/workspace', ws.id]">
-                        OPEN CHAT
-                    </button>
+
+                    <a [routerLink]="['/workspace', ws.id]"
+                        class="d-flex align-items-center text-decoration-none ms-auto">
+                        <mat-icon class="action-icons">chat</mat-icon>
+                    </a>
+                    <a [routerLink]="['/workspace', ws.id]" class="d-flex align-items-center text-decoration-none ms-3">
+                        <mat-icon class="action-icons">edit_document</mat-icon>
+                    </a>
                     <button mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon>more_vert</mat-icon>
                     </button>

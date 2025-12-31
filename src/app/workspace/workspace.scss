@@ -1,0 +1,9 @@
+@use '../../styles/theme-colors' as colors;
+
+.action-icons {
+    color: colors.$primary-color;
+}
+
+.workspace-icon {
+    border: 1px solid colors.$primary-color;
+}

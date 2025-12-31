@@ -7,8 +7,7 @@ import {
   ISignedUrl,
   IUploadPayload,
 } from '@shared/resources';
-import { Observable } from 'rxjs';
-import { IWorkspace } from './workspace.interface';
+import { IWorkspace, IWorkspaceDetails } from './workspace.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +15,9 @@ import { IWorkspace } from './workspace.interface';
 export class WorkspaceService {
   workspaces = signal<IWorkspace[]>([]);
   workspaceEndpoint = `${API_ENDPOINTS.workspace}`;
-  // workspaceDetails = signal<>();
+  workspaceDetails = signal<IWorkspaceDetails>({} as IWorkspaceDetails);
 
-  constructor(private commonHttpService: CommonHttpService, private httpClient: HttpClient) {}
+  constructor(private commonHttpService: CommonHttpService, private httpClient: HttpClient) { }
 
   getWorkspaces() {
     this.commonHttpService.get<IHttpResponse<IWorkspace[]>>(this.workspaceEndpoint).subscribe({
@@ -29,15 +28,13 @@ export class WorkspaceService {
   }
 
   getWorkspaceById(workspaceId: string) {
-    return this.commonHttpService.get<IHttpResponse<any[]>>(
-      `${this.workspaceEndpoint}/${workspaceId}`
-    );
-  }
-
-  getAllDocsByWorkspace(workspaceId: string): Observable<any> {
-    return this.commonHttpService.get<any>(
-      `${API_ENDPOINTS.documents.getAllByWorkspace}/${workspaceId}`
-    );
+    this.commonHttpService
+      .get<IHttpResponse<IWorkspaceDetails>>(`${this.workspaceEndpoint}/${workspaceId}`)
+      .subscribe({
+        next: (workspaceData: IHttpResponse<IWorkspaceDetails>) => {
+          this.workspaceDetails.set(workspaceData.data);
+        },
+      });
   }
 
   deleteWorkspace(workspaceId: string) {
@@ -83,5 +80,17 @@ export class WorkspaceService {
       `${API_ENDPOINTS.documents.uploaded}`,
       payload
     );
+  }
+
+  getDocumentById(documentId: string) {
+    return this.commonHttpService.get<IHttpResponse<any>>(API_ENDPOINTS.documents.getById(documentId))
+  }
+
+  deleteDocumentById(documentId: string) {
+    return this.commonHttpService.delete<IHttpResponse<any>>(API_ENDPOINTS.documents.getById(documentId))
+  }
+
+  viewDocumentById(documentId: string) {
+    return this.commonHttpService.get<IHttpResponse<ISignedUrl>>(API_ENDPOINTS.documents.viewDocById(documentId))
   }
 }

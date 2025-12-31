@@ -3,20 +3,43 @@
         <tr>
             <th>Name</th>
             <th>Status</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let doc of documents">
-            <td>{{ doc.name }}</td>
-            <td>
+        @for(doc of documents; track doc.id){
+        <tr>
+            <td class="vertical-middle">{{ doc.name }}</td>
+            <td class="vertical-middle">
                 <span class="badge" [ngClass]="{
-              'bg-warning': doc.status === 'PENDING',
-              'bg-success': doc.status === 'INDEXED',
-              'bg-danger': doc.status === 'FAILED'
-            }">
+                  'bg-warning': doc.status === 'PENDING',
+                  'bg-success': doc.status === 'INDEXED',
+                  'bg-danger': doc.status === 'FAILED'
+                }">
                     {{ doc.status }}
                 </span>
             </td>
+            <td class="vertical-middle">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="getStatus.emit(doc.id)">
+                        <mat-icon>sync</mat-icon>
+                        <span>Sync</span>
+                    </button>
+                    <button mat-menu-item (click)="viewDocument.emit(doc.id)">
+                        <mat-icon>file_open</mat-icon>
+                        <span>View</span>
+                    </button>
+                    <button mat-menu-item class="text-danger" (click)="deleteDocument.emit(doc.id)">
+                        <mat-icon color="warn">delete</mat-icon>
+                        <span>Delete</span>
+                    </button>
+                </mat-menu>
+            </td>
         </tr>
+
+        }
     </tbody>
 </table>

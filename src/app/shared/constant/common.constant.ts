@@ -20,6 +20,8 @@ export const API_ENDPOINTS = {
     upload: 'documents/upload',
     uploaded: 'documents/uploaded',
     getAllByWorkspace: 'workspaces/documents',
+    getById: (id: string) => `documents/${id}`,
+    viewDocById: (id: string) => `documents/view/${id}`,
   },
 };
 

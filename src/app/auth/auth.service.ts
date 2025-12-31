@@ -9,7 +9,7 @@ import {
   SESSION_KEYS,
 } from '@shared/resources';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, tap } from 'rxjs';
+import { catchError, EMPTY, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,7 @@ export class AuthService {
     private commonHttpClient: CommonHttpService,
     private router: Router,
     private toastrService: ToastrService
-  ) {}
+  ) { }
 
   loginWithGoogle() {
     return this.commonHttpClient.get(API_ENDPOINTS.auth.googleLogin);
@@ -86,6 +86,12 @@ export class AuthService {
           console.log('THIS ARE THE TOKENS FROM REFRESH', tokens);
           window.alert(JSON.stringify(tokens));
           this.storeTokens(tokens.data);
+        }),
+        catchError((error) => {
+          console.log('ERROR DURING TOKEN REFRESH', error);
+          localStorage.clear();
+          this.router.navigate([`${APP_ROUTES.auth}/${APP_ROUTES.login}`]);
+          return EMPTY;
         })
       );
   }
@@ -94,7 +100,7 @@ export class AuthService {
     localStorage.setItem(SESSION_KEYS.TOKEN, authToken);
   }
 
-    get token(): string {
+  get token(): string {
     return localStorage.getItem(SESSION_KEYS.TOKEN) as string;
   }
 
