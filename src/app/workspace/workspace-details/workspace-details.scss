@@ -1,9 +1,16 @@
 @use '../../../styles/theme-colors' as colors;
 
 .back-arrow {
-    height: 48px;
-    width: 48px;
-    font-size: 48px;
+    height: 32px;
+    width: 32px;
+    font-size: 32px;
+    color: colors.$primary-color !important;
+
+}
+
+
+.back-txt {
+    font-size: 28px;
     color: colors.$primary-color !important;
 
 }

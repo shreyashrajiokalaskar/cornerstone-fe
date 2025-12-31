@@ -3,17 +3,21 @@ import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Component, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DocumentUpload, IHttpResponse, ISignedUrl, IUploadPayload } from '@shared/resources';
 import { ToastrService } from 'ngx-toastr';
 import { sha256 } from '../../shared/utils/common.utils';
+import { AiConfig } from '../ai-config/ai-config';
+import { Chat } from '../chat/chat';
 import { DocumentList } from '../document-list/document-list';
+import { Settings } from '../settings/settings';
 import { IDocument, IWorkspaceDetails } from '../workspace.interface';
 import { WorkspaceService } from '../workspace.service';
 
 @Component({
   selector: 'app-workspace-details',
-  imports: [DocumentUpload, DocumentList, CommonModule, MatSlideToggleModule, MatIconModule, RouterLink],
+  imports: [DocumentUpload, DocumentList, CommonModule, MatSlideToggleModule, MatIconModule, RouterLink, MatTabsModule, Chat, AiConfig, Settings],
   templateUrl: './workspace-details.html',
   styleUrl: './workspace-details.scss',
 })

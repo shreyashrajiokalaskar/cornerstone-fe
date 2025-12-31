@@ -1,0 +1,30 @@
+<mat-card class="p-3 mt-4 shadow-sm">
+    <h3>AI Engine Settings</h3>
+    <form [formGroup]="configForm">
+        <div class="mb-4">
+            <label class="form-label d-flex justify-content-between">
+                Creativity (Temperature) <span>{{ tempValue }}</span>
+            </label>
+            <mat-slider min="0" max="1" step="0.1" class="slider">
+                <input matSliderThumb [value]="tempValue" formControlName="temperature">
+            </mat-slider>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>System Instructions</mat-label>
+            <textarea matInput formControlName="systemPrompt" rows="4"
+                placeholder="e.g. You are a helpful technical support bot..."></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Model Name</mat-label>
+            <mat-select formControlName="modelName">
+                <mat-option value="option1">Option 1</mat-option>
+                <mat-option value="option2" disabled>Option 2 (disabled)</mat-option>
+                <mat-option value="option3">Option 3</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" class="w-100 mt-2" type="button">Save Configuration</button>
+    </form>
+</mat-card>
