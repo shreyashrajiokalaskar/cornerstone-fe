@@ -17,7 +17,7 @@ export class WorkspaceService {
   workspaceEndpoint = `${API_ENDPOINTS.workspace}`;
   workspaceDetails = signal<IWorkspaceDetails>({} as IWorkspaceDetails);
 
-  constructor(private commonHttpService: CommonHttpService, private httpClient: HttpClient) { }
+  constructor(private commonHttpService: CommonHttpService, private httpClient: HttpClient) {}
 
   getWorkspaces() {
     this.commonHttpService.get<IHttpResponse<IWorkspace[]>>(this.workspaceEndpoint).subscribe({
@@ -83,14 +83,20 @@ export class WorkspaceService {
   }
 
   getDocumentById(documentId: string) {
-    return this.commonHttpService.get<IHttpResponse<any>>(API_ENDPOINTS.documents.getById(documentId))
+    return this.commonHttpService.get<IHttpResponse<any>>(
+      API_ENDPOINTS.documents.getById(documentId)
+    );
   }
 
   deleteDocumentById(documentId: string) {
-    return this.commonHttpService.delete<IHttpResponse<any>>(API_ENDPOINTS.documents.getById(documentId))
+    return this.commonHttpService.delete<IHttpResponse<any>>(
+      API_ENDPOINTS.documents.getById(documentId)
+    );
   }
 
   viewDocumentById(documentId: string) {
-    return this.commonHttpService.get<IHttpResponse<ISignedUrl>>(API_ENDPOINTS.documents.viewDocById(documentId))
+    return this.commonHttpService.get<IHttpResponse<ISignedUrl>>(
+      API_ENDPOINTS.documents.viewDocById(documentId)
+    );
   }
 }

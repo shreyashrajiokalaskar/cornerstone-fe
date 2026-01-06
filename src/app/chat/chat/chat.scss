@@ -1,0 +1,8 @@
+.send-btn {
+    border: 0;
+    background: transparent;
+}
+
+.send-btn:not([disabled]) {
+    color: #006a6a;
+}

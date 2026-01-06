@@ -23,6 +23,12 @@ export const API_ENDPOINTS = {
     getById: (id: string) => `documents/${id}`,
     viewDocById: (id: string) => `documents/view/${id}`,
   },
+  chat: {
+    create: (id: string) => `chat/sessions/${id}`,
+    session: 'chat/session',
+    getChats: (workspaceId: string) => `chat/sessions/${workspaceId}`,
+    getChat: (chatId: string) => `chat/${chatId}`,
+  },
 };
 
 export const APP_ROUTES = {

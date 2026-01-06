@@ -13,7 +13,7 @@
             <td class="vertical-middle">
                 <span class="badge" [ngClass]="{
                   'bg-warning': doc.status === 'PENDING',
-                  'bg-success': doc.status === 'INDEXED',
+                  'bg-success': doc.status === 'COMPLETED',
                   'bg-danger': doc.status === 'FAILED'
                 }">
                     {{ doc.status }}

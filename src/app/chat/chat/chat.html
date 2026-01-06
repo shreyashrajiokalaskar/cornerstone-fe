@@ -18,10 +18,10 @@
                 <div class="sources-container mt-2 pt-2 border-top border-secondary-subtle">
                     <small class="d-block text-muted mb-1">Sources:</small>
                     <div class="d-flex flex-wrap gap-1">
-                        @for (source of msg.sources; track source.id) {
+                        @for (source of msg.sources; track source.index) {
                         <span class="badge rounded-pill bg-secondary-subtle text-dark border pointer"
-                            [matTooltip]="source.content.substring(0, 100) + '...'">
-                            <mat-icon style="font-size: 12px; height: 12px; width: 12px;">description</mat-icon>
+                            [matTooltip]="source.preview.substring(0, 100) + '...'">
+                            <!-- <mat-icon style="font-size: 12px; height: 12px; width: 12px;">description</mat-icon> -->
                             {{ source.documentName }}
                         </span>
                         }
@@ -41,13 +41,15 @@
     </div>
 
     <div class="chat-input p-3 border-top bg-light">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Ask a question about your documents..."
-                [(ngModel)]="userInput" (keyup.enter)="sendMessage()">
-            <button class="btn btn-primary" type="button" [disabled]="!userInput() || isTyping()"
-                (click)="sendMessage()">
-                <mat-icon>send</mat-icon>
-            </button>
+        <div class="input-group d-flex">
+            <mat-form-field appearance="outline" class="w-100">
+                <input matInput type="text" class="" placeholder="Ask a question about your documents..."
+                    [(ngModel)]="userInput" (keyup.enter)="sendMessage()">
+                <button matSuffix class="send-btn px-3" type="button" [disabled]="!userInput() || isTyping()"
+                    (click)="sendMessage()">
+                    <mat-icon>send</mat-icon>
+                </button>
+            </mat-form-field>
         </div>
     </div>
 </div>

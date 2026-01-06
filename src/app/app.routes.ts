@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { Login } from './auth/login/login';
 import { Signup } from './auth/signup/signup';
+import { ChatWrapper } from './chat/chat-wrapper';
+import { Chat } from './chat/chat/chat';
+import { StartChat } from './chat/start-chat/start-chat';
 import { Dashboard } from './dashboard/dashboard';
 import { APP_ROUTES, authGuard } from './shared';
 import { Workspace } from './workspace/workspace';
@@ -37,8 +40,28 @@ export const routes: Routes = [
         component: Workspace,
       },
       {
-        path: ':id',
-        component: WorkspaceDetails,
+        path: ':workspaceId',
+        children: [
+          {
+            path: '',
+            component: WorkspaceDetails,
+          },
+          {
+            component: ChatWrapper,
+            path: 'chat',
+            canActivate: [authGuard],
+            children: [
+              {
+                path: '',
+                component: StartChat,
+              },
+              {
+                path: ':chatId',
+                component: Chat,
+              },
+            ],
+          },
+        ],
       },
     ],
   },

@@ -24,3 +24,15 @@ export interface ISignedUrl {
   key: string;
   url: string;
 }
+
+export interface IChatResponse {
+  answer: string;
+  sources?: ISource[];
+}
+
+export interface ISource {
+  documentId: string;
+  documentName: string;
+  index: number;
+  preview: string;
+}

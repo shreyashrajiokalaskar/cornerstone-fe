@@ -7,9 +7,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DocumentUpload, IHttpResponse, ISignedUrl, IUploadPayload } from '@shared/resources';
 import { ToastrService } from 'ngx-toastr';
+import { Chat } from '../../chat/chat/chat';
 import { sha256 } from '../../shared/utils/common.utils';
 import { AiConfig } from '../ai-config/ai-config';
-import { Chat } from '../chat/chat';
 import { DocumentList } from '../document-list/document-list';
 import { Settings } from '../settings/settings';
 import { IDocument, IWorkspaceDetails } from '../workspace.interface';
@@ -17,7 +17,18 @@ import { WorkspaceService } from '../workspace.service';
 
 @Component({
   selector: 'app-workspace-details',
-  imports: [DocumentUpload, DocumentList, CommonModule, MatSlideToggleModule, MatIconModule, RouterLink, MatTabsModule, Chat, AiConfig, Settings],
+  imports: [
+    DocumentUpload,
+    DocumentList,
+    CommonModule,
+    MatSlideToggleModule,
+    MatIconModule,
+    RouterLink,
+    MatTabsModule,
+    Chat,
+    AiConfig,
+    Settings,
+  ],
   templateUrl: './workspace-details.html',
   styleUrl: './workspace-details.scss',
 })
@@ -33,7 +44,8 @@ export class WorkspaceDetails {
     private route: ActivatedRoute,
     private toastrService: ToastrService
   ) {
-    this.workspaceId = this.route.snapshot.params['id'];
+    this.workspaceId = this.route.snapshot.params['workspaceId'];
+    console.log('this.route.snapshot.params', this.route.snapshot.params);
     this.workspaceService.getWorkspaceById(this.workspaceId);
     this.workspace$ = this.workspaceService.workspaceDetails;
   }
@@ -87,7 +99,6 @@ export class WorkspaceDetails {
       next: () => {
         this.resetTrigger.update((prev) => prev + 1);
         this.workspaceService.getWorkspaceById(this.workspaceId);
-
       },
       error: () => {
         this.uploadProgress.set(0);
@@ -119,27 +130,26 @@ export class WorkspaceDetails {
             doc.status = response.data.status;
             this.toastrService.success(`Fetched latest status for document: ${doc.name}`);
           }
-        })
-      }
-    })
+        });
+      },
+    });
   }
 
   viewDocument(documentId: string) {
     this.workspaceService.viewDocumentById(documentId).subscribe({
       next: (response: IHttpResponse<ISignedUrl>) => {
-        console.log(response)
+        console.log(response);
         window.open(response.data.url, '_blank');
-      }
-    })
+      },
+    });
   }
   deleteDocument(documentId: string) {
     this.workspaceService.deleteDocumentById(documentId).subscribe({
       next: (response: IHttpResponse<any>) => {
-        console.log(response)
+        console.log(response);
         this.toastrService.success(`Document deleted successfully`);
         this.workspaceService.getWorkspaceById(this.workspaceId);
-      }
-    })
+      },
+    });
   }
-
 }

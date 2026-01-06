@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { API_ENDPOINTS, CommonHttpService, Header } from '@shared/resources';
+import { Header } from '@shared/resources';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
@@ -12,12 +12,12 @@ import { AuthService } from '../auth/auth.service';
 export class Dashboard {
   authService = inject(AuthService);
 
-  constructor(private commonHttpService: CommonHttpService) {
-    this.commonHttpService.get(API_ENDPOINTS.users).subscribe({
-      next: (res) => {
-        console.log(res);
-      },
-    });
+  constructor() {
+    // this.commonHttpService.get(API_ENDPOINTS.users).subscribe({
+    //   next: (res) => {
+    //     console.log(res);
+    //   },
+    // });
   }
 
   logout() {
