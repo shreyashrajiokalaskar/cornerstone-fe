@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { API_ENDPOINTS, CommonHttpService, IChatResponse, IHttpResponse } from '@shared/resources';
 import { Observable } from 'rxjs';
-import { IAllChats, IChatMessage } from './chat.interface';
+import { IAllChats, IChatSessionResponse } from './chat.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,15 +26,19 @@ export class ChatService {
   }
 
   getChatById(chatId: string) {
-    return this.commonHttpService.get<IHttpResponse<IChatMessage[]>>(
+    return this.commonHttpService.get<IHttpResponse<IChatSessionResponse>>(
       API_ENDPOINTS.chat.getChat(chatId)
     );
   }
 
-  chat(documentId: string, payload: any) {
+  chat(payload: any, sessionId: string) {
     return this.commonHttpService.post<IHttpResponse<IChatResponse>>(
-      API_ENDPOINTS.chat.create(documentId),
+      API_ENDPOINTS.chat.create(sessionId),
       payload
     );
+  }
+
+  deleteChat(chatId: string) {
+    return this.commonHttpService.delete<IHttpResponse<null>>(API_ENDPOINTS.chat.getChat(chatId));
   }
 }

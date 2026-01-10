@@ -1,3 +1,5 @@
+import { IChat } from '../../chat/chat.interface';
+
 export interface IHttpResponse<T> {
   success: boolean;
   statusCode: number;
@@ -27,6 +29,7 @@ export interface ISignedUrl {
 
 export interface IChatResponse {
   answer: string;
+  chat: IChat;
   sources?: ISource[];
 }
 

@@ -1,18 +1,30 @@
 <div class="sidenav-container">
-    <div class="row">
-        <div class="col-2">
-            <div class="chats d-flex flex-column gap-2 px-3 py-2">
-                @let chatList = chats();
-                @for(chat of chatList; track chat.id){
-                <a [routerLink]="[chat.id]">
-                    <span>{{chat.id}}</span>
-                </a>
-                }
-            </div>
-        </div>
-        <div class="col-9">
-            <router-outlet></router-outlet>
-        </div>
+  <div class="row">
+    <a
+      [routerLink]="['/workspace']"
+      class="d-flex align-items-center justify-content-start text-decoration-none mx-3 mb-3 gap-2"
+    >
+      <mat-icon matPrefix class="back-arrow">keyboard_backspace</mat-icon>
+      <span class="back-txt fw-bold"> Back </span>
+    </a>
+  </div>
+  <div class="row">
+    <div class="col-2">
+      <div class="chats d-flex flex-column gap-2 px-3 py-2">
+        @let chatList = chats(); @for(chat of chatList; track chat.id){
+        <a [routerLink]="[chat.id]">
+          <span>{{ chat.title || chat.id }}</span>
+        </a>
+        }
+      </div>
+      <div class="chats d-flex flex-column gap-2 px-3 py-2">
+        <a routerLink=".">
+          <span>Start a new Chat</span>
+        </a>
+      </div>
     </div>
-
+    <div class="col-9">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

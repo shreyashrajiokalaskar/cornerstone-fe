@@ -24,8 +24,8 @@ export const API_ENDPOINTS = {
     viewDocById: (id: string) => `documents/view/${id}`,
   },
   chat: {
-    create: (id: string) => `chat/sessions/${id}`,
-    session: 'chat/session',
+    create: (id?: string) => `chat/sessions?id=${id ?? ''}`,
+    session: 'chat/sessions',
     getChats: (workspaceId: string) => `chat/sessions/${workspaceId}`,
     getChat: (chatId: string) => `chat/${chatId}`,
   },

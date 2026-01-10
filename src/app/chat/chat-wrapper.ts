@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { IHttpResponse } from '@shared/resources';
 import { IAllChats } from './chat.interface';
 import { ChatService } from './chat.service';
@@ -38,7 +38,13 @@ export class ChatWrapper {
     this.sessionId = this.router.url.split('/chat/')[1];
     console.log(this.router.url);
 
-    this.getChats();
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.workspaceId = this.activatedRoute.snapshot.params['workspaceId'];
+        this.sessionId = this.router.url.split('/chat/')[1];
+        this.getChats();
+      }
+    });
   }
 
   getChats() {
@@ -76,5 +82,9 @@ export class ChatWrapper {
 
   open(id: string) {
     this.sessionId = id;
+  }
+
+  getBackRoute() {
+    return `/workspace/${this.workspaceId}/chat`;
   }
 }

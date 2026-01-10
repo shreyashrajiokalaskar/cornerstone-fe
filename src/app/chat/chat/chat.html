@@ -1,55 +1,74 @@
 <div class="chat-container d-flex flex-column shadow-sm border rounded bg-white mt-4">
-    <div class="chat-header p-3 border-bottom bg-light d-flex justify-content-between align-items-center">
-        <span class="fw-bold"><mat-icon class="align-middle me-1">smart_toy</mat-icon> AI Playground</span>
-        <button mat-icon-button (click)="clearChat()" matTooltip="Clear conversation">
-            <mat-icon>delete_sweep</mat-icon>
+  <div
+    class="chat-header p-3 border-bottom bg-light d-flex justify-content-between align-items-center"
+  >
+    <span class="fw-bold"
+      ><mat-icon class="align-middle me-1">smart_toy</mat-icon> AI Playground</span
+    >
+    @if(sessionId()){
+
+    <button mat-icon-button (click)="clearChat()" matTooltip="Clear conversation">
+      <mat-icon>delete_sweep</mat-icon>
+    </button>
+    }
+  </div>
+
+  <div class="chat-messages p-3 flex-grow-1 overflow-auto" #scrollContainer>
+    @for (msg of messages(); track $index) {
+    <div class="d-flex mb-3" [class.justify-content-end]="msg.role === 'user'">
+      <div
+        class="message-bubble p-3 rounded-3"
+        [ngClass]="msg.role === 'user' ? 'bg-primary text-white' : 'bg-light border text-dark'"
+      >
+        <div class="message-text">{{ msg.content }}</div>
+
+        @if (msg.role === 'ai' && msg.documents && msg.documents.length > 0) {
+        <div class="sources-container mt-2 pt-2 border-top border-secondary-subtle">
+          <small class="d-block text-muted mb-1">Sources:</small>
+          <div class="d-flex flex-wrap gap-1">
+            @for (source of msg.documents; track source.id) {
+            <span
+              class="badge rounded-pill bg-secondary-subtle text-dark border pointer"
+              [matTooltip]="source.content.substring(0, 100) + '...'"
+            >
+              <!-- <mat-icon style="font-size: 12px; height: 12px; width: 12px;">description</mat-icon> -->
+              {{ source.name }}
+            </span>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    } @if (isTyping()) {
+    <div class="typing-indicator p-2 text-muted italic">
+      <mat-spinner diameter="20" class="d-inline-block me-2"></mat-spinner>
+      AI is thinking...
+    </div>
+    }
+  </div>
+
+  <div class="chat-input p-3 border-top bg-light">
+    <div class="input-group d-flex">
+      <mat-form-field appearance="outline" class="w-100">
+        <input
+          matInput
+          type="text"
+          class=""
+          placeholder="Ask a question about your documents..."
+          [(ngModel)]="userInput"
+          (keyup.enter)="sendMessage()"
+        />
+        <button
+          matSuffix
+          class="send-btn px-3"
+          type="button"
+          [disabled]="!userInput() || isTyping()"
+          (click)="sendMessage()"
+        >
+          <mat-icon>send</mat-icon>
         </button>
+      </mat-form-field>
     </div>
-
-    <div class="chat-messages p-3 flex-grow-1 overflow-auto" #scrollContainer>
-        @for (msg of messages(); track $index) {
-        <div class="d-flex mb-3" [class.justify-content-end]="msg.role === 'user'">
-            <div class="message-bubble p-3 rounded-3"
-                [ngClass]="msg.role === 'user' ? 'bg-primary text-white' : 'bg-light border text-dark'">
-
-                <div class="message-text">{{ msg.text }}</div>
-
-                @if (msg.role === 'ai' && msg.sources && msg.sources.length > 0) {
-                <div class="sources-container mt-2 pt-2 border-top border-secondary-subtle">
-                    <small class="d-block text-muted mb-1">Sources:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        @for (source of msg.sources; track source.index) {
-                        <span class="badge rounded-pill bg-secondary-subtle text-dark border pointer"
-                            [matTooltip]="source.preview.substring(0, 100) + '...'">
-                            <!-- <mat-icon style="font-size: 12px; height: 12px; width: 12px;">description</mat-icon> -->
-                            {{ source.documentName }}
-                        </span>
-                        }
-                    </div>
-                </div>
-                }
-            </div>
-        </div>
-        }
-
-        @if (isTyping()) {
-        <div class="typing-indicator p-2 text-muted italic">
-            <mat-spinner diameter="20" class="d-inline-block me-2"></mat-spinner>
-            AI is thinking...
-        </div>
-        }
-    </div>
-
-    <div class="chat-input p-3 border-top bg-light">
-        <div class="input-group d-flex">
-            <mat-form-field appearance="outline" class="w-100">
-                <input matInput type="text" class="" placeholder="Ask a question about your documents..."
-                    [(ngModel)]="userInput" (keyup.enter)="sendMessage()">
-                <button matSuffix class="send-btn px-3" type="button" [disabled]="!userInput() || isTyping()"
-                    (click)="sendMessage()">
-                    <mat-icon>send</mat-icon>
-                </button>
-            </mat-form-field>
-        </div>
-    </div>
+  </div>
 </div>
