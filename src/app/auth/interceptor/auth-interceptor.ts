@@ -14,9 +14,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.token;
-    console.log(req.url)
 
-    if(req.url.includes('aws')){
+    if (req.url.includes('aws')) {
       return next.handle(req);
     }
 

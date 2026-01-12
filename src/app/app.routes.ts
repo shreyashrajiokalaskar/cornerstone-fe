@@ -5,6 +5,7 @@ import { ChatWrapper } from './chat/chat-wrapper';
 import { Chat } from './chat/chat/chat';
 import { Dashboard } from './dashboard/dashboard';
 import { APP_ROUTES, authGuard } from './shared';
+import { isAdminGuard } from './shared/guards/isAdmin/is-admin-guard';
 import { Workspace } from './workspace/workspace';
 import { WorkspaceDetails } from './workspace/workspace-details/workspace-details';
 
@@ -44,6 +45,7 @@ export const routes: Routes = [
           {
             path: '',
             component: WorkspaceDetails,
+            canActivate: [isAdminGuard],
           },
           {
             component: ChatWrapper,

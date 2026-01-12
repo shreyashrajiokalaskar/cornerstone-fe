@@ -6,10 +6,15 @@
       ><mat-icon class="align-middle me-1">smart_toy</mat-icon> AI Playground</span
     >
     @if(sessionId()){
+    <div class="actions d-flex gap-2">
+      <button mat-icon-button (click)="clearChat()" matTooltip="Clear conversation">
+        <mat-icon>delete_sweep</mat-icon>
+      </button>
 
-    <button mat-icon-button (click)="clearChat()" matTooltip="Clear conversation">
-      <mat-icon>delete_sweep</mat-icon>
-    </button>
+      <button mat-icon-button (click)="exportChat()" matTooltip="Export conversation">
+        <mat-icon>publish</mat-icon>
+      </button>
+    </div>
     }
   </div>
 

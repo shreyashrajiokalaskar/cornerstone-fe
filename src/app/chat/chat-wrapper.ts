@@ -36,7 +36,6 @@ export class ChatWrapper {
   ) {
     this.workspaceId = this.activatedRoute.snapshot.params['workspaceId'];
     this.sessionId = this.router.url.split('/chat/')[1];
-    console.log(this.router.url);
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {

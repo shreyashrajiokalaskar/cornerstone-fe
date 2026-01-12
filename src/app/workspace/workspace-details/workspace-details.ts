@@ -7,11 +7,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DocumentUpload, IHttpResponse, ISignedUrl, IUploadPayload } from '@shared/resources';
 import { ToastrService } from 'ngx-toastr';
-import { Chat } from '../../chat/chat/chat';
 import { sha256 } from '../../shared/utils/common.utils';
 import { AiConfig } from '../ai-config/ai-config';
 import { DocumentList } from '../document-list/document-list';
-import { Settings } from '../settings/settings';
 import { IDocument, IWorkspaceDetails } from '../workspace.interface';
 import { WorkspaceService } from '../workspace.service';
 
@@ -25,9 +23,7 @@ import { WorkspaceService } from '../workspace.service';
     MatIconModule,
     RouterLink,
     MatTabsModule,
-    Chat,
     AiConfig,
-    Settings,
   ],
   templateUrl: './workspace-details.html',
   styleUrl: './workspace-details.scss',
@@ -38,6 +34,7 @@ export class WorkspaceDetails {
   file!: File;
   uploadProgress = signal(0);
   resetTrigger = signal(0);
+  tabIndex = 0;
 
   constructor(
     private workspaceService: WorkspaceService,
@@ -151,5 +148,10 @@ export class WorkspaceDetails {
         this.workspaceService.getWorkspaceById(this.workspaceId);
       },
     });
+  }
+
+  getWorkspaceDetails() {
+    this.workspaceService.getWorkspaceById(this.workspaceId);
+    this.tabIndex = 0;
   }
 }

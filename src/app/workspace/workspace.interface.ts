@@ -5,6 +5,9 @@ export interface IWorkspace {
   description?: string;
   active: boolean;
   createdAt: Date;
+  temperature: number;
+  systemPrompt: string;
+  topK: number;
 }
 
 export interface IWorkspaceDetails {
@@ -14,6 +17,9 @@ export interface IWorkspaceDetails {
   ownerId: string;
   active: boolean;
   documents: IDocument[];
+  temperature: number;
+  systemPrompt: string;
+  topK: number;
 }
 
 export interface IDocument {

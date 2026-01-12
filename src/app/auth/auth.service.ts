@@ -19,7 +19,7 @@ export class AuthService {
     private commonHttpClient: CommonHttpService,
     private router: Router,
     private toastrService: ToastrService
-  ) { }
+  ) {}
 
   loginWithGoogle() {
     return this.commonHttpClient.get(API_ENDPOINTS.auth.googleLogin);
@@ -76,7 +76,11 @@ export class AuthService {
 
   refresh() {
     const refreshToken = localStorage.getItem(SESSION_KEYS.REFRESH_TOKEN);
-
+    if (!refreshToken) {
+      localStorage.clear();
+      this.router.navigate([`${APP_ROUTES.auth}/${APP_ROUTES.login}`]);
+      return EMPTY;
+    }
     return this.commonHttpClient
       .post<{ data: { token: string; refreshToken: string } }>(API_ENDPOINTS.auth.refresh, {
         refreshToken,
@@ -94,6 +98,14 @@ export class AuthService {
           return EMPTY;
         })
       );
+  }
+
+  set role(role: string) {
+    localStorage.setItem(SESSION_KEYS.ROLE, role);
+  }
+
+  get role(): string {
+    return localStorage.getItem(SESSION_KEYS.ROLE) as string;
   }
 
   set token(authToken: string) {

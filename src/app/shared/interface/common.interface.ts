@@ -12,6 +12,7 @@ export interface IUserDetails {
   image?: string;
   token?: string;
   refreshToken?: string;
+  role?: string;
 }
 
 export interface IUploadPayload {

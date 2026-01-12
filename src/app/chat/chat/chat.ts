@@ -39,14 +39,12 @@ export class Chat {
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {
-    console.log(this.activatedRoute.snapshot.params);
     this.sessionId.set(this.activatedRoute.snapshot.params['chatId']);
     this.workspaceId = this.router.url.split('/')[2];
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.sessionId.set(this.router.url.split('/chat/')[1]);
-        console.log(this.sessionId);
       }
     });
     effect(() => {
@@ -84,7 +82,6 @@ export class Chat {
               id: '124456',
             },
           ]);
-          console.log('GOT ANSWER', res);
           this.isTyping.set(false);
           this.router.navigateByUrl(`/workspace/${this.workspaceId}/chat/${res.data.chat.id}`);
         },
@@ -107,6 +104,14 @@ export class Chat {
     this.chatService.getChatById(this.sessionId()).subscribe({
       next: (res: IHttpResponse<IChatSessionResponse>) => {
         this.messages.set(res.data.messages);
+      },
+    });
+  }
+
+  exportChat() {
+    this.chatService.exportChat(this.sessionId() ?? '').subscribe({
+      next: (res) => {
+        console.log(res);
       },
     });
   }

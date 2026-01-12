@@ -1,41 +1,45 @@
 <div class="container mt-4">
-    <a [routerLink]="['/workspace']"
-        class="d-flex align-items-center justify-content-start text-decoration-none mb-3 gap-2">
-        <mat-icon matPrefix class="back-arrow">keyboard_backspace</mat-icon>
-        <span class="back-txt fw-bold">
-            Back
-        </span>
-    </a>
+  <a
+    [routerLink]="['/workspace']"
+    class="d-flex align-items-center justify-content-start text-decoration-none mb-3 gap-2"
+  >
+    <mat-icon matPrefix class="back-arrow">keyboard_backspace</mat-icon>
+    <span class="back-txt fw-bold"> Back </span>
+  </a>
 
-    @let workspace = workspace$();
-    <div class="row flex-row justify-content-between mb-4 align-items-center">
-        <h3 class="fw-bold w-auto m-0">{{ workspace.name }}</h3>
-        <mat-slide-toggle class="example-margin w-auto" [checked]="workspace.active"
-            (toggleChange)="updateStatus(!workspace.active)">
-        </mat-slide-toggle>
-    </div>
-    <p class="text-muted">{{ workspace.description }}</p>
-    <mat-tab-group>
-        <mat-tab label="Documents">
-            <app-document-list [documents]="workspace.documents" (getStatus)="getStatus($event)"
-                (deleteDocument)="deleteDocument($event)" (viewDocument)="viewDocument($event)"></app-document-list>
-            <app-document-upload class="mt-4" [workspaceId]="workspaceId" (upload)="getPresignedUrl($event)"
-                [resetTrigger]="resetTrigger()" [uploading]="uploadProgress"></app-document-upload>
-        </mat-tab>
+  @let workspace = workspace$();
+  <div class="row flex-row justify-content-between mb-4 align-items-center">
+    <h3 class="fw-bold w-auto m-0">{{ workspace.name }}</h3>
+    <mat-slide-toggle
+      class="example-margin w-auto"
+      [checked]="workspace.active"
+      (toggleChange)="updateStatus(!workspace.active)"
+    >
+    </mat-slide-toggle>
+  </div>
+  <p class="text-muted">{{ workspace.description }}</p>
+  <mat-tab-group [tabIndex]="tabIndex">
+    <mat-tab label="Documents">
+      <app-document-list
+        [documents]="workspace.documents"
+        (getStatus)="getStatus($event)"
+        (deleteDocument)="deleteDocument($event)"
+        (viewDocument)="viewDocument($event)"
+      ></app-document-list>
+      <app-document-upload
+        class="mt-4"
+        [workspaceId]="workspaceId"
+        (upload)="getPresignedUrl($event)"
+        [resetTrigger]="resetTrigger()"
+        [uploading]="uploadProgress"
+      ></app-document-upload>
+    </mat-tab>
 
-        <mat-tab label="AI Playground">
-            <div class="row">
-                <div class="col-md-8">
-                    <app-chat></app-chat>
-                </div>
-                <div class="col-md-4">
-                    <app-ai-config [workspaceId]="workspaceId"></app-ai-config>
-                </div>
-            </div>
-        </mat-tab>
-
-        <mat-tab label="Settings">
-            <app-workspace-settings></app-workspace-settings>
-        </mat-tab>
-    </mat-tab-group>
+    <mat-tab label="AI Playground">
+      <app-ai-config
+        [workspaceDetails]="workspace$()"
+        (onWorkspaceConfigUpdated)="getWorkspaceDetails()"
+      ></app-ai-config>
+    </mat-tab>
+  </mat-tab-group>
 </div>

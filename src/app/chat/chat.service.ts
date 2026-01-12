@@ -41,4 +41,10 @@ export class ChatService {
   deleteChat(chatId: string) {
     return this.commonHttpService.delete<IHttpResponse<null>>(API_ENDPOINTS.chat.getChat(chatId));
   }
+
+  exportChat(chatId: string) {
+    return this.commonHttpService.get<IHttpResponse<{ url: string }>>(
+      API_ENDPOINTS.chat.export(chatId)
+    );
+  }
 }

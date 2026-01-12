@@ -10,8 +10,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { RouterModule } from '@angular/router';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { Router, RouterModule } from '@angular/router';
+import { ROLES } from '@shared/resources';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../auth/auth.service';
+import { HasPermission } from '../shared/utils/hasPermission/has-permission';
 import { CreateWorkspace } from './create-workspace/create-workspace';
 import { IWorkspace } from './workspace.interface';
 import { WorkspaceService } from './workspace.service';
@@ -31,19 +35,25 @@ import { WorkspaceService } from './workspace.service';
     MatMenuModule,
     MatChipsModule,
     MatDialogModule,
+    MatSlideToggleModule,
+    HasPermission,
   ],
   templateUrl: './workspace.html',
   styleUrl: './workspace.scss',
 })
 export class Workspace implements OnInit {
   workspaces: WritableSignal<IWorkspace[]>;
+  isAdmin = false;
 
   constructor(
     private workspaceService: WorkspaceService,
     private toastrService: ToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.workspaces = this.workspaceService.workspaces;
+    this.isAdmin = this.authService.role === ROLES.ADMIN;
   }
 
   ngOnInit() {
@@ -109,5 +119,13 @@ export class Workspace implements OnInit {
         this.workspaceService.getWorkspaces();
       }
     });
+  }
+
+  goToChat(workspaceId: string) {
+    this.router.navigate(['/workspace', workspaceId, 'chat']);
+  }
+
+  goToWorkspace(workspaceId: string) {
+    this.router.navigate(['/workspace', workspaceId]);
   }
 }

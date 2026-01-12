@@ -3,6 +3,7 @@ export enum SESSION_KEYS {
   REFRESH_TOKEN = 'refresh_token',
   EMAIL = 'email',
   USER = 'user',
+  ROLE = 'role',
 }
 
 export const API_ENDPOINTS = {
@@ -28,6 +29,7 @@ export const API_ENDPOINTS = {
     session: 'chat/sessions',
     getChats: (workspaceId: string) => `chat/sessions/${workspaceId}`,
     getChat: (chatId: string) => `chat/${chatId}`,
+    export: (chatId: string) => `chat/export/${chatId}`,
   },
 };
 
@@ -37,3 +39,8 @@ export const APP_ROUTES = {
   signup: 'signup',
   workspace: 'workspace',
 };
+
+export enum ROLES {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}

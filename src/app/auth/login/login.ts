@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {
-    FormControl,
-    FormGroup,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -95,9 +95,13 @@ export class Login {
       .login(this.loginForm.value.email as string, this.loginForm.value.password as string)
       .subscribe({
         next: (details: IHttpResponse<IUserDetails>) => {
-          this.authService.userData = { email: details.data.email, name: details.data.name };
+          this.authService.userData = {
+            email: details.data.email,
+            name: details.data.name,
+          };
           this.authService.token = details.data.token as string;
           this.authService.refreshToken = details.data.refreshToken as string;
+          this.authService.role = details.data.role as string;
           this.toastr.success('Logged In successfully!');
           this.router.navigate(['/workspace']);
         },
