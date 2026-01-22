@@ -28,6 +28,11 @@ export const routes: Routes = [
         component: Signup,
         canActivate: [authGuard],
       },
+      {
+        path: APP_ROUTES.activateAdmin,
+        component: Signup,
+        canActivate: [authGuard],
+      },
     ],
   },
   {

@@ -11,9 +11,12 @@ export const API_ENDPOINTS = {
     login: 'auth/login',
     logout: 'auth/logout',
     signup: 'auth/signup',
+    register: 'auth/register',
     googleLogin: 'auth/google-login',
     refresh: 'auth/refresh',
     verifyCode: (code: string, state: string) => `auth/google-verify?code=${code}&state=${state}`,
+    verifyAdminCode: (token: string) => `auth/admin/verify-invite?token=${token}`,
+    createAdmin: `auth/admin/register`,
   },
   users: 'users',
   workspace: 'workspaces',
@@ -38,6 +41,7 @@ export const APP_ROUTES = {
   login: 'login',
   signup: 'signup',
   workspace: 'workspace',
+  activateAdmin: 'admin/activate',
 };
 
 export enum ROLES {

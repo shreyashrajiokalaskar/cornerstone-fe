@@ -14,7 +14,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Router, RouterModule } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ParamMap,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { APP_ROUTES } from '@shared/resources';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../auth.service';
@@ -38,11 +44,13 @@ export class Signup {
   signupForm: FormGroup;
   hidePassword = true;
   hideConfirmPassword = true;
+  adminToken!: string;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private activatedRoute: ActivatedRoute,
   ) {
     this.signupForm = this.fb.group(
       {
@@ -51,8 +59,36 @@ export class Signup {
         password: ['', [Validators.required, Validators.minLength(8)]],
         confirmPassword: ['', [Validators.required]],
       },
-      { validators: this.passwordMatchValidator }
+      { validators: this.passwordMatchValidator },
     );
+
+    this.activatedRoute.queryParamMap.subscribe({
+      next: (params: ParamMap) => {
+        console.log('PARAMS', params);
+        this.adminToken = params.get('token') as string;
+        console.log('Activated ADMIN', this.adminToken);
+        this.verifyToken();
+      },
+    });
+
+    this.signupForm.valueChanges.subscribe({
+      next: () => {
+        console.log('VALUES', this.signupForm);
+      },
+    });
+  }
+
+  verifyToken() {
+    this.authService.verifyAdminToken(this.adminToken).subscribe({
+      next: () => {
+        this.signupForm.removeControl('email');
+        this.signupForm.updateValueAndValidity();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.toastrService.error(err.error.message);
+        this.router.navigate([`${APP_ROUTES.auth}/${APP_ROUTES.login}`]);
+      },
+    });
   }
 
   // Custom validator to check if passwords match
@@ -71,6 +107,30 @@ export class Signup {
         confirmPassword.setErrors(null);
       }
       return null;
+    }
+  }
+
+  createAdmin() {
+    if (this.signupForm.valid) {
+      console.log('Signup Data:', this.signupForm.value);
+      this.authService
+        .createAdmin({
+          password: this.signupForm.value['password'],
+          name: this.signupForm.value['name'],
+          token: this.adminToken,
+        })
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+            this.toastrService.success('Account created successfully!');
+            this.router.navigate([`${APP_ROUTES.auth}/${APP_ROUTES.login}`]);
+          },
+          error: (err: HttpErrorResponse) => {
+            console.log(err.error.message);
+            this.toastrService.error(err.error.message);
+          },
+        });
+      // Proceed to: Create Workspace
     }
   }
 

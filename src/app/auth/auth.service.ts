@@ -18,7 +18,7 @@ export class AuthService {
   constructor(
     private commonHttpClient: CommonHttpService,
     private router: Router,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
   ) {}
 
   loginWithGoogle() {
@@ -27,7 +27,7 @@ export class AuthService {
 
   verifyGoogleCode(code: string, seed: string): Observable<IHttpResponse<IUserDetails>> {
     return this.commonHttpClient.get<IHttpResponse<IUserDetails>>(
-      API_ENDPOINTS.auth.verifyCode(code, seed)
+      API_ENDPOINTS.auth.verifyCode(code, seed),
     );
   }
 
@@ -70,7 +70,7 @@ export class AuthService {
   signupUser(userDetails: { name: string; password: string; email: string }) {
     return this.commonHttpClient.post<IHttpResponse<IUserDetails>>(
       API_ENDPOINTS.auth.signup,
-      userDetails
+      userDetails,
     );
   }
 
@@ -96,8 +96,19 @@ export class AuthService {
           localStorage.clear();
           this.router.navigate([`${APP_ROUTES.auth}/${APP_ROUTES.login}`]);
           return EMPTY;
-        })
+        }),
       );
+  }
+
+  verifyAdminToken(token: string) {
+    return this.commonHttpClient.get<IHttpResponse<any>>(API_ENDPOINTS.auth.verifyAdminCode(token));
+  }
+
+  createAdmin(userDetails: { name: string; password: string; token: string }) {
+    return this.commonHttpClient.post<IHttpResponse<IUserDetails>>(
+      API_ENDPOINTS.auth.createAdmin,
+      userDetails,
+    );
   }
 
   set role(role: string) {
