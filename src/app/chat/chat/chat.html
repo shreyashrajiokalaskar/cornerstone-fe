@@ -1,10 +1,6 @@
 <div class="chat-container d-flex flex-column shadow-sm border rounded bg-white mt-4">
-  <div
-    class="chat-header p-3 border-bottom bg-light d-flex justify-content-between align-items-center"
-  >
-    <span class="fw-bold"
-      ><mat-icon class="align-middle me-1">smart_toy</mat-icon> AI Playground</span
-    >
+  <div class="chat-header p-3 border-bottom bg-light d-flex justify-content-between align-items-center">
+    <span class="fw-bold"><mat-icon class="align-middle me-1">smart_toy</mat-icon> AI Playground</span>
     @if(sessionId()){
     <div class="actions d-flex gap-2">
       <button mat-icon-button (click)="clearChat()" matTooltip="Clear conversation">
@@ -19,23 +15,19 @@
   </div>
 
   <div class="chat-messages p-3 flex-grow-1 overflow-auto" #scrollContainer>
-    @for (msg of messages(); track $index) {
+    @for (msg of messages(); track msg.id) {
     <div class="d-flex mb-3" [class.justify-content-end]="msg.role === 'user'">
-      <div
-        class="message-bubble p-3 rounded-3"
-        [ngClass]="msg.role === 'user' ? 'bg-primary text-white' : 'bg-light border text-dark'"
-      >
-        <div class="message-text">{{ msg.content }}</div>
+      <div class="message-bubble p-3 rounded-3"
+        [ngClass]="msg.role === 'user' ? 'bg-primary text-white' : 'bg-light border text-dark'">
+        <div class="message-text">{{ msg.content || 'Thinking...' }}</div>
 
-        @if (msg.role === 'ai' && msg.documents && msg.documents.length > 0) {
+        @if ((msg.role === 'ai' || msg.role === 'assistant') && msg.documents && msg.documents.length > 0) {
         <div class="sources-container mt-2 pt-2 border-top border-secondary-subtle">
           <small class="d-block text-muted mb-1">Sources:</small>
           <div class="d-flex flex-wrap gap-1">
-            @for (source of msg.documents; track source.id) {
-            <span
-              class="badge rounded-pill bg-secondary-subtle text-dark border pointer"
-              [matTooltip]="source.content.substring(0, 100) + '...'"
-            >
+            @for (source of msg.documents; track source.documentId) {
+            <span class="badge rounded-pill bg-secondary-subtle text-dark border pointer"
+              [matTooltip]="source.content.substring(0, 100) + '...'">
               <!-- <mat-icon style="font-size: 12px; height: 12px; width: 12px;">description</mat-icon> -->
               {{ source.name }}
             </span>
@@ -56,21 +48,10 @@
   <div class="chat-input p-3 border-top bg-light">
     <div class="input-group d-flex">
       <mat-form-field appearance="outline" class="w-100">
-        <input
-          matInput
-          type="text"
-          class=""
-          placeholder="Ask a question about your documents..."
-          [(ngModel)]="userInput"
-          (keyup.enter)="sendMessage()"
-        />
-        <button
-          matSuffix
-          class="send-btn px-3"
-          type="button"
-          [disabled]="!userInput() || isTyping()"
-          (click)="sendMessage()"
-        >
+        <input matInput type="text" class="" placeholder="Ask a question about your documents..."
+          [(ngModel)]="userInput" (keyup.enter)="sendMessage()" />
+        <button matSuffix class="send-btn px-3" type="button" [disabled]="!userInput() || isTyping()"
+          (click)="sendMessage()">
           <mat-icon>send</mat-icon>
         </button>
       </mat-form-field>

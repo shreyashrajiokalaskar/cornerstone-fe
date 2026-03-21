@@ -10,7 +10,7 @@ import { AuthService } from '../auth.service';
 // };
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.token;
@@ -21,10 +21,10 @@ export class AuthInterceptor implements HttpInterceptor {
 
     const request = token
       ? req.clone({
-          setHeaders: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       : req;
 
     return next.handle(request).pipe(
@@ -45,6 +45,9 @@ export class AuthInterceptor implements HttpInterceptor {
               return EMPTY;
             })
           );
+        } if (error.status === 403) {
+          this.authService.logout();
+          return EMPTY;
         }
         return throwError(() => error);
       })

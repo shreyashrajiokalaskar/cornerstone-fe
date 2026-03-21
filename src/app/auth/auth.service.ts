@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
   API_ENDPOINTS,
@@ -19,7 +20,8 @@ export class AuthService {
     private commonHttpClient: CommonHttpService,
     private router: Router,
     private toastrService: ToastrService,
-  ) {}
+    private dialogRef: MatDialog
+  ) { }
 
   loginWithGoogle() {
     return this.commonHttpClient.get(API_ENDPOINTS.auth.googleLogin);
@@ -55,6 +57,7 @@ export class AuthService {
           console.log('LOGOUT SUCCESSFUL!');
           localStorage.clear();
           this.toastrService.success('Logged out successfully!');
+          this.dialogRef.closeAll();
           this.router.navigate([`${APP_ROUTES.auth}/${APP_ROUTES.login}`]);
         },
       });

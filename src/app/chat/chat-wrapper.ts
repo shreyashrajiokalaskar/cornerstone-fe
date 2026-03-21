@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { IHttpResponse } from '@shared/resources';
+import { Subscription } from 'rxjs';
 import { IAllChats } from './chat.interface';
 import { ChatService } from './chat.service';
 @Component({
@@ -21,13 +22,14 @@ import { ChatService } from './chat.service';
   templateUrl: './chat-wrapper.html',
   styleUrl: './chat-wrapper.scss',
 })
-export class ChatWrapper {
+export class ChatWrapper implements OnDestroy {
   sessionId = '';
   sessions = [];
   workspaceId: string;
   chats = signal<IAllChats[]>([]);
+  subscriptions!: Subscription;
 
-  getIds() {}
+  getIds() { }
 
   constructor(
     private chatService: ChatService,
@@ -37,13 +39,14 @@ export class ChatWrapper {
     this.workspaceId = this.activatedRoute.snapshot.params['workspaceId'];
     this.sessionId = this.router.url.split('/chat/')[1];
 
-    this.router.events.subscribe((event) => {
+    this.subscriptions = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.workspaceId = this.activatedRoute.snapshot.params['workspaceId'];
         this.sessionId = this.router.url.split('/chat/')[1];
         this.getChats();
       }
     });
+    this.getChats();
   }
 
   getChats() {
@@ -86,4 +89,9 @@ export class ChatWrapper {
   getBackRoute() {
     return `/workspace/${this.workspaceId}/chat`;
   }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
 }

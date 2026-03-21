@@ -20,7 +20,7 @@ export interface IChatMessage {
 }
 
 export interface IChatDocs {
-  id: string;
+  documentId: string;
   name: string;
   content: string;
 }

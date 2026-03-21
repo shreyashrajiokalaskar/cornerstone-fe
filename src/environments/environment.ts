@@ -1,3 +1,3 @@
 export const environment = {
-  API_URL: 'https://api.pucho.space/api',
+  API_URL: 'http://localhost:3333/api',
 };

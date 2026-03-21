@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { API_ENDPOINTS, CommonHttpService, IChatResponse, IHttpResponse } from '@shared/resources';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { AuthService } from '../auth/auth.service';
 import { IAllChats, IChatSessionResponse } from './chat.interface';
 
 @Injectable({
@@ -9,6 +11,8 @@ import { IAllChats, IChatSessionResponse } from './chat.interface';
 })
 export class ChatService {
   workspaceId: string;
+  authService = inject(AuthService);
+
   constructor(private commonHttpService: CommonHttpService, private router: Router) {
     this.workspaceId = '';
   }
@@ -46,5 +50,54 @@ export class ChatService {
     return this.commonHttpService.get<IHttpResponse<{ url: string }>>(
       API_ENDPOINTS.chat.export(chatId)
     );
+  }
+
+  streamChat(payload: any, sessionId: string): Observable<any> {
+    const token = this.authService.token;
+    return new Observable((observer) => {
+      fetch(`${environment.API_URL}/${API_ENDPOINTS.chat.create(sessionId)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      }).then(async (response) => {
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader!.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          // 🔥 Split SSE-style messages
+          const parts = buffer.split('\n\n');
+          buffer = parts.pop() || '';
+
+          for (const part of parts) {
+            if (part.startsWith('data: ')) {
+              const json = part.replace('data: ', '');
+
+              if (json === '[DONE]') {
+                observer.complete();
+                return;
+              }
+
+              try {
+                observer.next(JSON.parse(json));
+              } catch (e) {
+                console.error('Parse error', e);
+              }
+            }
+          }
+        }
+
+        observer.complete();
+      }).catch((err) => observer.error(err));
+    });
   }
 }

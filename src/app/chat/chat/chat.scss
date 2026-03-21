@@ -6,3 +6,8 @@
 .send-btn:not([disabled]) {
     color: #006a6a;
 }
+
+.chat-container {
+    overflow-y: auto;
+    max-height: calc(100vh - 172px);
+}
