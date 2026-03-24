@@ -39,7 +39,7 @@ export class WorkspaceDetails {
   constructor(
     private workspaceService: WorkspaceService,
     private route: ActivatedRoute,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
   ) {
     this.workspaceId = this.route.snapshot.params['workspaceId'];
     console.log('this.route.snapshot.params', this.route.snapshot.params);
@@ -107,13 +107,17 @@ export class WorkspaceDetails {
   }
 
   updateStatus(status: boolean) {
+    this.workspace$.update((workspace: IWorkspaceDetails) => {
+      workspace.active = status;
+      return workspace;
+    });
     this.workspaceService.updateWorkspace(this.workspaceId, { active: status }).subscribe({
       next: () => {
         this.toastrService.success('Workspace status updated successfully');
         this.workspaceService.getWorkspaceById(this.workspaceId);
       },
-      error: () => {
-        this.toastrService.error('Failed to update workspace status');
+      error: (err: HttpErrorResponse) => {
+        this.toastrService.error(err?.error?.message || 'Failed to update workspace status');
         this.workspaceService.getWorkspaceById(this.workspaceId);
       },
     });

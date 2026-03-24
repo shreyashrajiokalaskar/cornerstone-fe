@@ -67,7 +67,9 @@ export class Signup {
         console.log('PARAMS', params);
         this.adminToken = params.get('token') as string;
         console.log('Activated ADMIN', this.adminToken);
-        this.verifyToken();
+        if (this.adminToken) {
+          this.verifyToken();
+        }
       },
     });
 

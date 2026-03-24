@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, WritableSignal } from '@angular/core';
+import { Component, OnDestroy, OnInit, WritableSignal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +19,7 @@ import { HasPermission } from '../shared/utils/hasPermission/has-permission';
 import { CreateWorkspace } from './create-workspace/create-workspace';
 import { IWorkspace } from './workspace.interface';
 import { WorkspaceService } from './workspace.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-workspace',
@@ -41,16 +42,17 @@ import { WorkspaceService } from './workspace.service';
   templateUrl: './workspace.html',
   styleUrl: './workspace.scss',
 })
-export class Workspace implements OnInit {
+export class Workspace implements OnInit, OnDestroy {
   workspaces: WritableSignal<IWorkspace[]>;
   isAdmin = false;
+  subscription: Subscription[] = [];
 
   constructor(
     private workspaceService: WorkspaceService,
     private toastrService: ToastrService,
     private dialog: MatDialog,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.workspaces = this.workspaceService.workspaces;
     this.isAdmin = this.authService.role === ROLES.ADMIN;
@@ -61,15 +63,17 @@ export class Workspace implements OnInit {
   }
 
   deleteWorkspace(workspaceId: string) {
-    this.workspaceService.deleteWorkspace(workspaceId).subscribe({
-      next: () => {
-        this.toastrService.success('Workspace deleted successfully!');
-        this.workspaceService.getWorkspaces();
-      },
-      error: (err: HttpErrorResponse) => {
-        this.toastrService.error(err?.error?.message || 'Something went wrong!');
-      },
-    });
+    this.subscription.push(
+      this.workspaceService.deleteWorkspace(workspaceId).subscribe({
+        next: () => {
+          this.toastrService.success('Workspace deleted successfully!');
+          this.workspaceService.getWorkspaces();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.toastrService.error(err?.error?.message || 'Something went wrong!');
+        },
+      }),
+    );
   }
 
   openCreateDialog() {
@@ -77,29 +81,33 @@ export class Workspace implements OnInit {
       width: '450px',
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // Refresh list if a new workspace was created
-        this.toastrService.success('Workspace created successfully!');
-        this.workspaceService.getWorkspaces();
-      }
-    });
+    this.subscription.push(
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          // Refresh list if a new workspace was created
+          this.toastrService.success('Workspace created successfully!');
+          this.workspaceService.getWorkspaces();
+        }
+      }),
+    );
   }
 
   toggleActive(workspace: IWorkspace) {
-    this.workspaceService
-      .updateWorkspace(workspace.id, {
-        active: !workspace.active,
-      })
-      .subscribe({
-        next: () => {
-          this.toastrService.success('Workspace updated successfully!');
-          this.workspaceService.getWorkspaces();
-        },
-        error: (err: HttpErrorResponse) => {
-          this.toastrService.error(err?.error?.message || 'Something went wrong!');
-        },
-      });
+    this.subscription.push(
+      this.workspaceService
+        .updateWorkspace(workspace.id, {
+          active: !workspace.active,
+        })
+        .subscribe({
+          next: () => {
+            this.toastrService.success('Workspace updated successfully!');
+            this.workspaceService.getWorkspaces();
+          },
+          error: (err: HttpErrorResponse) => {
+            this.toastrService.error(err?.error?.message || 'Something went wrong!');
+          },
+        }),
+    );
   }
 
   editWorkspace(workspace: IWorkspace) {
@@ -112,13 +120,15 @@ export class Workspace implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // Refresh list if a new workspace was created
-        this.toastrService.success('Workspace created successfully!');
-        this.workspaceService.getWorkspaces();
-      }
-    });
+    this.subscription.push(
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          // Refresh list if a new workspace was created
+          this.toastrService.success('Workspace created successfully!');
+          this.workspaceService.getWorkspaces();
+        }
+      }),
+    );
   }
 
   goToChat(workspaceId: string) {
@@ -127,5 +137,9 @@ export class Workspace implements OnInit {
 
   goToWorkspace(workspaceId: string) {
     this.router.navigate(['/workspace', workspaceId]);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
 }
